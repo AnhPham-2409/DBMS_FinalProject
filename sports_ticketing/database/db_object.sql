@@ -146,6 +146,23 @@ LEFT JOIN ticket t ON t.box_office_id = bo.box_office_id
                   AND t.status        = 'Paid'
 GROUP BY bo.box_office_id, bo.office_name, bo.office_type;
 
+-- Tickets display
+CREATE OR REPLACE VIEW v_ticket_display AS
+SELECT
+    t.ticket_id,
+    ez.zone_name,
+    s.seat_name,
+    e.event_name,
+    e.event_date,
+    st.stadium_name,
+    t.qr_code
+FROM TICKET t
+JOIN EVENT_SEAT es  ON es.event_seat_id = t.event_seat_id
+JOIN SEAT s         ON s.seat_id        = es.seat_id
+JOIN EVENT_ZONE ez  ON ez.zone_id       = es.zone_id
+JOIN EVENT e        ON e.event_id       = es.event_id
+JOIN STADIUM st     ON st.stadium_id    = e.stadium_id
+WHERE t.status = 'Paid';
 
 -- =============================================================================
 -- 3. FUNCTIONS
